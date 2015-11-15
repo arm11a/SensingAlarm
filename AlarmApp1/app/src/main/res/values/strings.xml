@@ -12,4 +12,5 @@
     <string name="unknown_device">Unknown device</string>
     <string name="intro_message">BLE devices</string>
     <string name="time">시</string>
+    <string name="title_activity_alarm">AlarmActivity</string>
 </resources>
