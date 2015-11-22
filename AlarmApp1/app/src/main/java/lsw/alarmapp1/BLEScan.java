@@ -28,7 +28,7 @@ public class BLEScan {
     private Handler mHandler;
     private static final int REQUEST_ENABLE_BT = 1;
     // Stops scanning after 10 seconds.
-    private static final long SCAN_PERIOD = 1000;
+    private static final long SCAN_PERIOD = 10000;
     boolean mScanning;
     public BluetoothAdapter mBluetoothAdapter;
     Context mContext;
@@ -40,7 +40,6 @@ public class BLEScan {
         Log.d(LOG_TAG, "onCreate BLEScan");
 //        mHandler = new Handler();
         mHandler = handler;
-
         mContext = context;
         final BluetoothManager bluetoothManager =
                 (BluetoothManager) mContext.getSystemService(Context.BLUETOOTH_SERVICE);
@@ -64,13 +63,15 @@ public void scanLeDevice(final boolean enable) {
                         mBluetoothAdapter.stopLeScan(mLeScanCallback);
                     }
                 }, SCAN_PERIOD);
-
+                Log.d(LOG_TAG, "scanLeDevice debug spot 1 ");
                 mScanning = true;
                 mBluetoothAdapter.startLeScan(mLeScanCallback);
+                Log.d(LOG_TAG, "scanLeDevice debug spot 2 ");
             } else {
                 mScanning = false;
                 mBluetoothAdapter.stopLeScan(mLeScanCallback);
             }
+            Log.d(LOG_TAG, "scanLeDevice debug spot 3 ");
             Log.d(LOG_TAG, "scanLeDevice " + enable );
         }
 

@@ -36,7 +36,6 @@ public class AlarmActivity extends AppCompatActivity {
 
     Button StopAlarmButton;
     BLEScan mBLEScan;
-    TestClass mTest;
     Handler mHandler;
     WakeUpDecision mWakeUpDecision;
 

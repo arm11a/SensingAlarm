@@ -81,7 +81,9 @@ public class MainActivity extends AppCompatActivity implements TimePicker.OnTime
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu1:
-                Log.d(LOG_TAG, "onOptionsItemSelected menu_scan");
+                Log.d(LOG_TAG, "onOptionsItemSelected Device Pairing");
+                Intent intent = new Intent(mContext, DevicePairingActivity.class);
+                startActivity(intent);
                 break;
             case R.id.menu2:
                 Log.d(LOG_TAG, "onOptionsItemSelected menu_stop");

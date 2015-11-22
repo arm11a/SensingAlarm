@@ -10,10 +10,17 @@ public class DeviceHolder {
     String additionalData;
     int rssi;
 
-    public DeviceHolder(BluetoothDevice device, String additionalData, int rssi) {
+    DeviceHolder(DeviceHolder deviceHolder) {
+        this.device = deviceHolder.device;
+        this.additionalData = deviceHolder.additionalData;
+        this.rssi = deviceHolder.rssi;
+    }
+
+    DeviceHolder(BluetoothDevice device, String additionalData, int rssi) {
         this.device = device;
         this.additionalData = additionalData;
         this.rssi = rssi;
     }
+
 }
 
