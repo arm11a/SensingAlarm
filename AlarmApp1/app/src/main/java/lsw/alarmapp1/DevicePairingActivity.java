@@ -5,14 +5,17 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -26,18 +29,30 @@ public class DevicePairingActivity extends AppCompatActivity {
     BLEScan mBLEScan;
     Handler mHandler;
     private static final String LOG_TAG = "SensingAlarm_DevicePairing";
-    TextView deviceNameView, addressView, rssiView;
+    TextView deviceNameView, addressView, rssiView, currentPairedDevice;
     Button ScanDevice, StopScan;
     private DeviceListAdapter mAdapter;
-    ListView mBTDeviceView;
+    ListView mBTdeviceListView;
     private BluetoothAdapter mBluetoothAdapter;
     private static final int REQUEST_ENABLE_BT = 1;
-
+    public static final String PairedDeviceStorage = "PairedDeviceStorage";
+    public String mPairedDeviceName;
+    SharedPreferences mPairedDeviceStorage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device_pairing);
 
+        mPairedDeviceStorage = getSharedPreferences(PairedDeviceStorage, 0);
+        mPairedDeviceName = mPairedDeviceStorage.getString("PairedDeviceKey", ""); //temporary uses the device address.
+        currentPairedDevice = (TextView)findViewById(R.id.CurrentPairedDevice);
+
+        if(mPairedDeviceName.equals("")) {
+            currentPairedDevice.setText("CurrentPairingDevice : None");
+            Toast.makeText(this, "Sensing Device is not paired. Please pairs the sensing device.", Toast.LENGTH_SHORT).show();
+        } else {
+            currentPairedDevice.setText("CurrentPairingDevice : " + mPairedDeviceName);
+        }
         // Use this check to determine whether BLE is supported on the device.  Then you can
         // selectively disable BLE-related features.
         if (!getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE)) {
@@ -69,9 +84,22 @@ public class DevicePairingActivity extends AppCompatActivity {
         StopScan = (Button)findViewById(R.id.StopScan);
         StopScan.setOnClickListener(mClickListener);
 
-        mBTDeviceView = (ListView)findViewById(R.id.DeviceListView);
+        mBTdeviceListView = (ListView)findViewById(R.id.DeviceListView);
         mAdapter = new DeviceListAdapter(DevicePairingActivity.this);
-        mBTDeviceView.setAdapter(mAdapter);
+        mBTdeviceListView.setAdapter(mAdapter);
+        mBTdeviceListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+             @Override
+             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                 SharedPreferences.Editor editor = mPairedDeviceStorage.edit();
+                 editor.putString("PairedDeviceKey", mAdapter.mDeviceHolderList.get(position).device.getAddress());
+                 editor.commit();
+                 currentPairedDevice.setText("CurrentPairingDevice : " + mAdapter.mDeviceHolderList.get(position).device.getAddress());
+                 Toast.makeText(getApplicationContext(), "Pairing with " + mAdapter.mDeviceHolderList.get(position).device.getAddress(), Toast.LENGTH_SHORT).show();
+//                 Log.d(LOG_TAG, "onItemClick " + mAdapter.mDeviceHolderList.get(position).device.getAddress());
+//                 Log.d(LOG_TAG, "onItemClick stored PairedDeviceValue : " + mPairedDeviceStorage.getString("PairedDeviceKey",""));
+             }
+        }
+        );
 
         mHandler = new Handler() {
 
@@ -119,6 +147,14 @@ public class DevicePairingActivity extends AppCompatActivity {
             }
         }
     };
+
+    /*        layout_view.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                GoIntent(position);
+            }
+        });
+*/
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

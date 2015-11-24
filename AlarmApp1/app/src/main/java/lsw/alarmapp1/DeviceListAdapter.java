@@ -24,7 +24,7 @@ public class DeviceListAdapter extends BaseAdapter{
 
     private LayoutInflater mInflater;
     private Activity m_activity;
-    private ArrayList<DeviceHolder> mDeviceHolderList;
+    public ArrayList<DeviceHolder> mDeviceHolderList;
     private static final String LOG_TAG = "SensingAlarm_DeviceListAdapter";
 
     public DeviceListAdapter(Activity act) {
