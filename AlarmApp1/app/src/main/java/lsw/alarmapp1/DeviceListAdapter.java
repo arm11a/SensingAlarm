@@ -61,6 +61,43 @@ public class DeviceListAdapter extends BaseAdapter{
             mDeviceHolderList.add(deviceHolder);
     }
 
+    public boolean existCheck(DeviceHolder deviceHolder) {
+
+        //int i =0;
+
+        for(int i = 0; i < mDeviceHolderList.size(); i++) {
+            boolean nameCheck =false;
+            boolean addrCheck = false;
+
+//            if ((mDeviceHolderList.get(i).device.getName() != null) && !(mDeviceHolderList.get(i).device.getName().equals(""))) {
+            if ((mDeviceHolderList.get(i).device.getName() != null) && (deviceHolder.device.getName() != null)) {
+                if (0 == mDeviceHolderList.get(i).device.getName().compareTo(deviceHolder.device.getName()))
+                    nameCheck = true;
+            } else {
+                nameCheck = true; // if name is null, names aren't comparable. So default nameCheck is true.
+            }
+
+            if ((mDeviceHolderList.get(i).device.getAddress() != null) && (deviceHolder.device.getAddress() != null)) {
+                if (0 == mDeviceHolderList.get(i).additionalData.compareTo(deviceHolder.additionalData))
+                    addrCheck = true;
+            } else {
+                addrCheck = true; // if addrCheck is null, addrs aren't comparable. So default nameCheck is true.
+                                  // but this case may be bug case.
+            }
+
+//            if (mDeviceHolderList.get(i).rssi == deviceHolder.rssi) // rssi value is continuously changing, so can't compare.
+//                rssiCheck = true;
+
+            if(nameCheck == true && addrCheck == true) {
+                Log.d(LOG_TAG, "existCheck() deviceHolder is already exist to position " + i);
+                return true;
+            } else {
+                Log.d(LOG_TAG, "existCheck() nameCheck " + nameCheck + " addCheck " + addrCheck);
+            }
+        }
+        return false;
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Log.d(LOG_TAG,"getView is called position " + position);
@@ -75,15 +112,12 @@ public class DeviceListAdapter extends BaseAdapter{
         TextView deviceRssi = (TextView)convertView.findViewById(R.id.DeviceRssi_DevicePairing);
         LinearLayout layout_view =  (LinearLayout)convertView.findViewById(R.id.device_list_item);
 
-        if ((mDeviceHolderList.get(position).device.getName() != null) && !(mDeviceHolderList.get(position).device.getName().equals("")))
+//        if ((mDeviceHolderList.get(position).device.getName() != null) && !(mDeviceHolderList.get(position).device.getName().equals("")))
             deviceName.setText("Searched device name : " + mDeviceHolderList.get(position).device.getName());
-        else
-            Log.d(LOG_TAG,"device name is null or empty string");
 
-        if ((mDeviceHolderList.get(position).device.getAddress() != null) && !(mDeviceHolderList.get(position).device.getAddress().equals("")))
+//        if ((mDeviceHolderList.get(position).device.getAddress() != null) && !(mDeviceHolderList.get(position).device.getAddress().equals("")))
             deviceAddress.setText("Searched device address : " + mDeviceHolderList.get(position).device.getAddress());
-        else
-            Log.d(LOG_TAG, "device address is null or empty string");
+
 
         deviceRssi.setText("Searched device rssi :" +  mDeviceHolderList.get(position).rssi);
 

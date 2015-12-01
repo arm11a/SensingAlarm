@@ -97,14 +97,16 @@ public void scanLeDevice(final boolean enable) {
                     ArrayList<AdElement> ads = AdParser.parseAdData(scanRecord);
                     StringBuffer sb = new StringBuffer();
                     for( int i = 0 ; i < ads.size() ; ++i ) {
-                        AdElement e = ads.get(i);
-                        if( i > 0 )
-                            sb.append(" ; ");
+                        AdElement e = ads.get(i); // ads.get(0) 일때 "flags:LE General Discoverable Mode,BR/EDR Not Supported" 정도로 긴 값을 갖는다.
+                        if( i > 0 ) {
+                            sb.append(";");
+                        }
+                        //Log.d(LOG_TAG, "parsing test i " + i + ", " + e.toString());
                         sb.append(e.toString());
                     }
                     String additionalData = new String(sb);
                     Log.d(LOG_TAG, "additionalData: " + additionalData);
-                    DeviceHolder deviceHolder = new DeviceHolder(device,additionalData,rssi);
+                    DeviceHolder deviceHolder = new DeviceHolder(device,additionalData,rssi,scanRecord);
 
                     //mContext.runOnUiThread(new DeviceAddTask(deviceHolder));
                     Thread t = new Thread(new DeviceAddTask(deviceHolder));
@@ -121,20 +123,15 @@ public void scanLeDevice(final boolean enable) {
         }
 
         public void run() {
-            String recoDevice = new String("RECO");
             Log.d(LOG_TAG, "DeviceAddTask recoDevice " + deviceHolder.device.getName());
-
-            if(deviceHolder.device.getName() != null) {
-                if (deviceHolder.device.getName().equals(recoDevice)) {
                     Message msg = mHandler.obtainMessage();
                     msg.what = BLESCAN_DEVICE_DETECTED;
                     msg.obj = deviceHolder;
                     mHandler.sendMessage(msg);
-                    Log.d(LOG_TAG, "DeviceAddTask deviceNameView setText " + deviceHolder.device.getName());
-                    Log.d(LOG_TAG, "DeviceAddTask addressView setText " + deviceHolder.device.getAddress());
-                    Log.d(LOG_TAG, "DeviceAddTask rssiView setText " + Integer.toString(deviceHolder.rssi));
-                }
-            }
+                    Log.d(LOG_TAG, "DeviceAddTask device Name " + deviceHolder.device.getName());
+                    Log.d(LOG_TAG, "DeviceAddTask address  " + deviceHolder.device.getAddress());
+                    Log.d(LOG_TAG, "DeviceAddTask rssi  " + Integer.toString(deviceHolder.rssi));
+                    Log.d(LOG_TAG, "DeviceAddTask scanRecord " + deviceHolder.scanRecord[0] + " / " +deviceHolder.scanRecord[1] + " / " + deviceHolder.scanRecord[2] + " / " +  deviceHolder.scanRecord[3] + " / " +  deviceHolder.scanRecord[4] + " / " +  deviceHolder.scanRecord[5] + " / " +  deviceHolder.scanRecord[6] + " / " +  deviceHolder.scanRecord[7]);
         }
     }
 }

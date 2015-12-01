@@ -95,10 +95,8 @@ public class DevicePairingActivity extends AppCompatActivity {
                  editor.commit();
                  currentPairedDevice.setText("CurrentPairingDevice : " + mAdapter.mDeviceHolderList.get(position).device.getAddress());
                  Toast.makeText(getApplicationContext(), "Pairing with " + mAdapter.mDeviceHolderList.get(position).device.getAddress(), Toast.LENGTH_SHORT).show();
-//                 Log.d(LOG_TAG, "onItemClick " + mAdapter.mDeviceHolderList.get(position).device.getAddress());
-//                 Log.d(LOG_TAG, "onItemClick stored PairedDeviceValue : " + mPairedDeviceStorage.getString("PairedDeviceKey",""));
              }
-        }
+           }
         );
 
         mHandler = new Handler() {
@@ -110,10 +108,23 @@ public class DevicePairingActivity extends AppCompatActivity {
             switch(msg.what) {
                 case BLEScan.BLESCAN_DEVICE_DETECTED:
                     DeviceHolder deviceHolder = (DeviceHolder)msg.obj;
-
+                    int i = 0;
+                    boolean alreadyExist = false;
                     Log.d(LOG_TAG, "handleMessage device name " + deviceHolder.device.getName());
-                    mAdapter.addItem(deviceHolder);
-                    listUpdate();
+                    for(i =0 ; i<mAdapter.getCount(); i++) {
+                        if(mAdapter.existCheck(deviceHolder)) {
+                            alreadyExist = true;
+                            Log.d(LOG_TAG, "handleMessage device name " + deviceHolder.device.getName() + " is already Exist in mAdapter");
+                            break;
+                        }
+                    }
+
+                    if(alreadyExist == true) {
+                        break;
+                    } else {
+                        mAdapter.addItem(deviceHolder);
+                        listUpdate();
+                    }
                     /*
                     deviceNameView.setText("Searched Device name : " + deviceHolder.device.getName());
                     addressView.setText("Searched Device Address : " + deviceHolder.device.getAddress());
