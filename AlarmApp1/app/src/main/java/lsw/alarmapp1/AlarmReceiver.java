@@ -7,15 +7,9 @@ package lsw.alarmapp1;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.SystemClock;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import java.util.Calendar;
@@ -24,8 +18,8 @@ import java.util.Calendar;
  * When the alarm fires, this WakefulBroadcastReceiver receives the broadcast Intent
  * and then starts the IntentService {@code SampleSchedulingService} to do some work.
  */
-//public class SampleAlarmReceiver extends WakefulBroadcastReceiver {
-public class SampleAlarmReceiver extends BroadcastReceiver {
+//public class AlarmReceiver extends WakefulBroadcastReceiver {
+public class AlarmReceiver extends BroadcastReceiver {
     // The app's AlarmManager, which provides access to the system alarm services.
     private AlarmManager alarmMgr;
     // The pending intent that is triggered when the alarm fires.
@@ -35,7 +29,7 @@ public class SampleAlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d("BLEScan", "onReceive is called");
-        Toast.makeText(context, "SampleAlarmReceiver Called", Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "AlarmReceiver Called", Toast.LENGTH_LONG).show();
         Intent AlarmActivityIntent = new Intent(context, AlarmActivity.class);
         AlarmActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(AlarmActivityIntent);
@@ -51,7 +45,7 @@ public class SampleAlarmReceiver extends BroadcastReceiver {
     public void setAlarm(Context context, Calendar calendar) {
         Log.d("BLEScan", "onClick: alarm.setAlarm sampleAlarmReceiver");
         alarmMgr = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(context, SampleAlarmReceiver.class);
+        Intent intent = new Intent(context, AlarmReceiver.class);
         alarmIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
 
         /*

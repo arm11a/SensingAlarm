@@ -35,6 +35,7 @@ public class DevicePairingActivity extends AppCompatActivity {
     ListView mBTdeviceListView;
     private BluetoothAdapter mBluetoothAdapter;
     private static final int REQUEST_ENABLE_BT = 1;
+    private static final long SCAN_PERIOD = 1000*10; // 1000 이 1초
     public static final String PairedDeviceStorage = "PairedDeviceStorage";
     public String mPairedDeviceName;
     SharedPreferences mPairedDeviceStorage;
@@ -148,11 +149,11 @@ public class DevicePairingActivity extends AppCompatActivity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.ScanDevice:
-                    mBLEScan.scanLeDevice(true);
+                    mBLEScan.scanLeDevice(true,SCAN_PERIOD);
                     Log.i(LOG_TAG, "onClick ScanDevice button click");
                     break;
                 case R.id.StopScan:
-                    mBLEScan.scanLeDevice(false);
+                    mBLEScan.scanLeDevice(false, SCAN_PERIOD);
                     Log.i(LOG_TAG, "onClick StopScan button click");
                     break;
             }

@@ -30,7 +30,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name=".SampleAlarmReceiver" />
+        <receiver android:name=".AlarmReceiver" />
 
         <activity
             android:name=".AlarmActivity"
@@ -52,6 +52,11 @@
             </intent-filter>
         </activity>
 
+        <service
+            android:name="lsw.alarmapp1.SensorReceiverService"
+            android:label="SensorReceiverService" />
     </application>
+
+
 
 </manifest>

@@ -28,110 +28,59 @@ public class AlarmActivity extends AppCompatActivity {
 
     static MediaPlayer mPlayer;
     public String MediaPath = new String("/sdcard/bell.mp3");
+//    public String MediaPath = new String("/sdcard/Music/test.mp3");
     private static final String LOG_TAG = "SensingAlarm_AlarmActivity";
-    //private BluetoothAdapter mBluetoothAdapter;
-    private static final int REQUEST_ENABLE_BT = 1;
-    TextView deviceNameView, addressView, rssiView;
-    ArrayList<DeviceHolder> mDeviceHolderList = new ArrayList<DeviceHolder>();
 
     Button StopAlarmButton;
-    BLEScan mBLEScan;
-    Handler mHandler;
-    WakeUpDecision mWakeUpDecision;
+    Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        mContext = getApplicationContext();
         Log.i(LOG_TAG, "onCreate AlarmActivity");
 
         setContentView(R.layout.activity_alarm);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        StopAlarmButton = (Button)findViewById(R.id.StopAlarm);
+        StopAlarmButton = (Button) findViewById(R.id.StopAlarm);
         StopAlarmButton.setOnClickListener(mClickListener);
 
         try {
-        mPlayer = new MediaPlayer();
-        mPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
-        mPlayer.setDataSource(MediaPath);
-        mPlayer.prepare();
-        mPlayer.start();
+            mPlayer = new MediaPlayer();
+            //mPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
+            mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            mPlayer.setDataSource(MediaPath);
+            mPlayer.prepare();
+            mPlayer.start();
+            Log.v(LOG_TAG, "media player start");
         } catch (IOException e) {
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
         }
-        deviceNameView = (TextView)findViewById(R.id.DeviceName);
-        addressView = (TextView)findViewById(R.id.Address);
-        rssiView = (TextView)findViewById(R.id.Rssi);
-
-        mHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                Log.d(LOG_TAG, "handleMessage what" + msg.what);
-
-                switch(msg.what) {
-                    case BLEScan.BLESCAN_DEVICE_DETECTED:
-                        DeviceHolder deviceHolder = (DeviceHolder)msg.obj;
-                        Log.d(LOG_TAG, "handleMessage device name " + deviceHolder.device.getName());
-                        deviceNameView.setText("device name : " + deviceHolder.device.getName());
-                        addressView.setText("address : " + deviceHolder.device.getAddress());
-                        rssiView.setText("rssi : " + Integer.toString(deviceHolder.rssi));
-
-                        mWakeUpDecision.addDetection(deviceHolder);
-                        break;
-                    case WakeUpDecision.USER_WAKEUP:
-                        mPlayer.stop();
-                        mPlayer.release();
-                        Log.d(LOG_TAG, "handleMessage USER_WAKEUP");
-                        break;
-
-                }
-            }
-        };
-
-        mBLEScan = new BLEScan(getApplicationContext(), mHandler);
-        mWakeUpDecision = new WakeUpDecision(mHandler);
-        mWakeUpDecision.start();
-
-        // Ensures Bluetooth is enabled on the device.  If Bluetooth is not currently enabled,
-        // fire an intent to display a dialog asking the user to grant permission to enable it.
-        if (!mBLEScan.mBluetoothAdapter.isEnabled()) {
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-        }
-        mBLEScan.scanLeDevice(true);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // Ensures Bluetooth is enabled on the device.  If Bluetooth is not currently enabled,
-        // fire an intent to display a dialog asking the user to grant permission to enable it.
-/*
-            if (!mBLEScan.mBluetoothAdapter.isEnabled()) {
-                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-            }
-*/
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // User chose not to enable Bluetooth.
-        if (requestCode == REQUEST_ENABLE_BT && resultCode == Activity.RESULT_CANCELED) {
-            finish();
-            return;
-        }
-        super.onActivityResult(requestCode, resultCode, data);
+        Log.v(LOG_TAG, "onResume()");
     }
 
     Button.OnClickListener mClickListener = new View.OnClickListener() {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.StopAlarm:
-                    mPlayer.stop();
-                    mPlayer.release();
-                    Log.i(LOG_TAG, "onClick StopAlarm button click");
+                    if(mPlayer.isPlaying()) {
+                        mPlayer.stop();
+//                        mPlayer.release();
+                    }
+                    //Intent Service = new Intent(mContext, SensorReceiverService.class);
+                    //startService(Service);
+                    Log.i(LOG_TAG, "onClick() start SensorReceiverService");
+                    startService(new Intent(mContext, SensorReceiverService.class));
+                    Log.i(LOG_TAG, "onClick() StopAlarm button click");
+
+
+
                     break;
             }
         }
@@ -140,11 +89,11 @@ public class AlarmActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        Log.d(LOG_TAG, "onPause()");
     }
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d(LOG_TAG, "onDestroy");
-        mWakeUpDecision.mThreadRun = false;
+        Log.d(LOG_TAG, "onDestroy()");
     }
 }

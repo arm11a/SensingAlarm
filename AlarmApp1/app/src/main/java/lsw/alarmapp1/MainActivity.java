@@ -1,43 +1,26 @@
 package lsw.alarmapp1;
 
-import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-
-import adparser.AdElement;
-import adparser.AdParser;
 
 public class MainActivity extends AppCompatActivity implements TimePicker.OnTimeChangedListener {
 
     private TimePicker mTime;
     private GregorianCalendar mCalendar;;
-    SampleAlarmReceiver mAlarm = new SampleAlarmReceiver();
+    AlarmReceiver mAlarm = new AlarmReceiver();
     private static final String LOG_TAG = "SensingAlarm_MainActivity";
     Context mContext;
 
