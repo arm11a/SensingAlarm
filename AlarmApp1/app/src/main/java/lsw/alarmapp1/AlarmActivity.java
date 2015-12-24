@@ -71,16 +71,13 @@ public class AlarmActivity extends AppCompatActivity {
                 case R.id.StopAlarm:
                     if(mPlayer.isPlaying()) {
                         mPlayer.stop();
+                        Log.i(LOG_TAG, "onClick() mPlayer is stop");
 //                        mPlayer.release();
                     }
                     //Intent Service = new Intent(mContext, SensorReceiverService.class);
                     //startService(Service);
                     Log.i(LOG_TAG, "onClick() start SensorReceiverService");
                     startService(new Intent(mContext, SensorReceiverService.class));
-                    Log.i(LOG_TAG, "onClick() StopAlarm button click");
-
-
-
                     break;
             }
         }

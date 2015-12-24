@@ -27,7 +27,7 @@ public class SensorReceiverService extends Service {
     BLEScan mBLEScan;
     Handler mHandler;
     WakeUpDecision mWakeUpDecision;
-    int mReceivedPacket = -1;
+    int mPrevPacketNum = -1;
     private static final int REQUEST_ENABLE_BT = 1;
     TextView deviceNameView, addressView, rssiView;
     ArrayList<DeviceHolder> mDeviceHolderList = new ArrayList<DeviceHolder>();
@@ -37,6 +37,10 @@ public class SensorReceiverService extends Service {
     public String mAutoSnoopPeriod;
     SharedPreferences mPairedDeviceStorage;
     SharedPreferences mAutoSnoopPeriodStorage;
+    boolean userWakeup = false;
+    Intent mAlarmActivityIntent;
+//    public context mContext;
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -54,6 +58,10 @@ public class SensorReceiverService extends Service {
         mAutoSnoopPeriod = mPairedDeviceStorage.getString("AutoSnoopPeriodKey", "5"); //temporary uses the default period. need to make Auto snoop period setting menu.
         Log.v(LOG_TAG, "onStartCommand() mAutoSnoopPeriod : " + mAutoSnoopPeriod);
 
+        mAlarmActivityIntent = new Intent(this, AlarmActivity.class);
+        mAlarmActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        mWakeUpDecision = new WakeUpDecision();
         mHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -62,19 +70,25 @@ public class SensorReceiverService extends Service {
                 switch(msg.what) {
                     case BLEScan.BLESCAN_DEVICE_DETECTED:
                         DeviceHolder deviceHolder = (DeviceHolder)msg.obj;
-                        Log.d(LOG_TAG, "handleMessage device name " + deviceHolder.device.getName() + deviceHolder.device.getAddress() + Integer.toString(deviceHolder.rssi) + "packet sequence " + deviceHolder.scanRecord[13]);
-                        if(mReceivedPacket < deviceHolder.scanRecord[13]) {
-                            mReceivedPacket = deviceHolder.scanRecord[13];
-                            Log.d(LOG_TAG, "handleMessage " +  mReceivedPacket);
+                        Log.d(LOG_TAG, "handleMessage device name " + deviceHolder.device.getName() + deviceHolder.device.getAddress() + Integer.toString(deviceHolder.rssi) + " packet sequence " + deviceHolder.scanRecord[17]);
+                        if(mPrevPacketNum < deviceHolder.scanRecord[17]) {
+                            mPrevPacketNum = deviceHolder.scanRecord[17];
+                            if (userWakeup != true) {
+                                userWakeup = mWakeUpDecision.checkWakeup(deviceHolder);
+                                if(userWakeup == true) {
+                                    Log.d(LOG_TAG, "handleMessage BLESCAN_DEVICE_DETECTED userWakeup is true");
+                                }
+                            }
                         }
-//                        deviceNameView.setText("device name : " + deviceHolder.device.getName());
-//                        addressView.setText("address : " + deviceHolder.device.getAddress());
-//                        rssiView.setText("rssi : " + Integer.toString(deviceHolder.rssi));
-
-//                        mWakeUpDecision.addDetection(deviceHolder);
                         break;
-                    case WakeUpDecision.USER_WAKEUP:
-                        Log.d(LOG_TAG, "handleMessage USER_WAKEUP");
+
+                    case BLEScan.BLESCAN_SCAN_END:
+                        if(userWakeup != true) {
+                            Log.d(LOG_TAG, "handleMessage BLESCAN_SCAN_END start Alarm Activity");
+                            startActivity(mAlarmActivityIntent);
+                        }
+                        Log.d(LOG_TAG, "handleMessage BLESCAN_SCAN_END");
+                        stopService(new Intent(getApplicationContext(), SensorReceiverService.class));
                         break;
 
                 }

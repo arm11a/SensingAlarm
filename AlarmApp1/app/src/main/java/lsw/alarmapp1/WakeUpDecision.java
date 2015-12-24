@@ -7,22 +7,20 @@ import android.util.Log;
 /**
  * Created by user on 2015-11-15.
  */
-public class WakeUpDecision extends Thread {
+public class WakeUpDecision {
 
     private static final String LOG_TAG = "SensingAlarm_WakeUpDecision";
-    Handler mHandler;
-    boolean mThreadRun = true;
-    final static int USER_WAKEUP = 10;
 
-    public WakeUpDecision(Handler handler) {
+    public WakeUpDecision() {
         Log.d(LOG_TAG, "WakeUpDecision constructor");
-        mHandler = handler;
     }
 
-    public void addDetection(DeviceHolder deviceHolder) {
-        Log.d(LOG_TAG, "WakeUpDecision addDetection " + deviceHolder.device.getName());
+    public boolean checkWakeup(DeviceHolder deviceHolder) {
+        Log.d(LOG_TAG, "WakeUpDecision checkWakeup " + deviceHolder.device.getName());
+        return true; // temp
     }
 
+/*
     public void run() {
         super.run();
 
@@ -50,4 +48,5 @@ public class WakeUpDecision extends Thread {
         }
 
     }
+*/
 }

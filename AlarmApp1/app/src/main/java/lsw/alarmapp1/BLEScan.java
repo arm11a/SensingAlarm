@@ -35,6 +35,8 @@ public class BLEScan {
     ArrayList<DeviceHolder> mDeviceHolderList;
 
     final static int BLESCAN_DEVICE_DETECTED = 0;
+    final static int BLESCAN_SCAN_END = 1;
+
 
     public BLEScan(Context context,Handler handler) {
         Log.d(LOG_TAG, "onCreate BLEScan");
@@ -62,19 +64,21 @@ public void scanLeDevice(final boolean enable, long scanPeriod) {
                         mScanning = false;
                         Log.d(LOG_TAG, "scanLeDevice postDelay");
                         mBluetoothAdapter.stopLeScan(mLeScanCallback);
+                        Message msg = mHandler.obtainMessage();
+                        msg.what = BLESCAN_SCAN_END;
+//                        msg.obj = deviceHolder;
+                        mHandler.sendMessage(msg);
                     }
-                }, SCAN_PERIOD);
+//                }, SCAN_PERIOD);
 //                }, scanPeriod);
+                }, 10 * 1000);
 
-                Log.d(LOG_TAG, "scanLeDevice debug spot 1 ");
                 mScanning = true;
                 mBluetoothAdapter.startLeScan(mLeScanCallback);
-                Log.d(LOG_TAG, "scanLeDevice debug spot 2 ");
             } else {
                 mScanning = false;
                 mBluetoothAdapter.stopLeScan(mLeScanCallback);
             }
-            Log.d(LOG_TAG, "scanLeDevice debug spot 3 ");
                 Log.d(LOG_TAG, "scanLeDevice " + enable );
         }
 
