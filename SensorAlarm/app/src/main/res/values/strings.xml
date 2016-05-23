@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Sensor Alarm</string>
+    <string name="add_alarm">알람 추가</string>
+    <string name="alarming">알람중</string>
+</resources>

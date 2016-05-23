@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:paddingLeft="15px"
+    android:paddingRight="15px"
+    android:paddingTop="15px"
+    android:paddingBottom="45px"
+    >
+
+        <LinearLayout
+            android:id="@+id/AlarmLayout"
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                >
+                <CheckBox
+                    android:id="@+id/time"
+                    android:layout_width="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_height="wrap_content"
+                    android:textSize="14pt"
+                    android:text="10시 30분"
+                    android:layout_gravity="right"
+                    />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="수정"
+                    android:id="@+id/EditAlarm"
+                    android:textSize="9pt"
+                    android:layout_gravity="right"
+                    android:gravity="center"
+                    android:layout_alignBottom="@+id/time"
+                    android:layout_toLeftOf="@+id/DeleteAlarm"
+                    />
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="삭제"
+                    android:id="@+id/DeleteAlarm"
+                    android:textSize="9pt"
+                    android:layout_gravity="right"
+                    android:gravity="center"
+                    android:layout_alignBottom="@+id/time"
+                    android:layout_alignParentRight="true"
+                    />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:id="@+id/date"
+                android:singleLine="true"
+                android:gravity="center_vertical"
+                android:textSize="8pt"
+                android:text="월 화"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+
+    <!--
+        <TextView
+            android:layout_width="fill_parent"
+            android:id="@+id/minute"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:layout_height="wrap_content"/>
+    -->
+</LinearLayout>
