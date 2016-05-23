@@ -1,4 +1,4 @@
-package lsw.alarmapp1;
+package com.e4deen.sensoralarm;
 
 import org.junit.Test;
 
