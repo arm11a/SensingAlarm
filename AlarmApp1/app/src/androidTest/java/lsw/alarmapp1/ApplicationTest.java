@@ -1,4 +1,4 @@
-package com.e4deen.sensoralarm;
+package lsw.alarmapp1;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
